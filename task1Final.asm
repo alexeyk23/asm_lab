@@ -39,10 +39,10 @@ next:
 endwork:	
 	cmp ax,si
 	jle writeyes	
-	mov dx, OFFSET mno
+	lea dx,mno
 	jmp print	
 writeyes:	
-	mov dx, OFFSET myes	
+	lea dx,myes	
 	jmp print
 	
 print:  mov  ah,9             ; напечатать то, адрес чего в dx
