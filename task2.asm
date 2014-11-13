@@ -33,8 +33,12 @@ inputarray:
 	add bx,2 
 	call newline
 loop inputarray
-
+lea bp, array ; адрес массива
+push bp ;массив в  стек
+mov bp, n
+push bp; size array in stack
 call main
+
 ;----------------------------------------------------------------
 newline proc; перевод строки
     mov ah,9
@@ -43,14 +47,22 @@ newline proc; перевод строки
     ret
 newline endp
 ;----------------------------------------------------------------
-main proc
-	mov bx,0;index 
-	mov di,n; size array
-	mov ax,0; index last positive
-	mov si,0fffh; index first negative
-	mov cx,0; flag is first negative          
+main proc 
+PUSH BP	    ; сохраняем bp
+MOV BP, SP ; адрес вершины стека
+push bx
+push di
+push ax
+push si
+push cx
+	mov di,[bp+4]   ; size array	
+	mov bx,[bp+6]   ; array	address
+	mov ax,0	; index last positive
+	mov si,[bp+4]	; index first negative
+	add si,2 	; index first negative out of array size
+	mov cx,0	; flag is first negative          
 	action:
-		cmp array[bx],0
+		cmp [bx],0
 		jle negative
 		jmp positive
 	negative:
@@ -64,7 +76,7 @@ main proc
 	positive:
 		mov ax,bx
 		jmp next	
-	next:
+	next:	
 		add bx,2
 		dec di	
 		jnz action
@@ -83,6 +95,12 @@ main proc
 	        mov  ah,4ch                 
 	        int  21h
 	ret
+pop cx
+pop si
+pop ax
+pop di
+pop bx
+pop bp
 main endp
 ;----------------------------------------------------------------
 ReadInteger proc  ; до 65535
